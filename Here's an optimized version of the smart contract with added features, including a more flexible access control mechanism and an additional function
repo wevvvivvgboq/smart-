@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract AdvancedSmartContract {
+    address private owner;
+    uint256 private data;
+
+    event DataUpdated(uint256 newData);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
+    }
+
+    modifier validData(uint256 newData) {
+        require(newData != data, "New data must be different from current data");
+        _;
+    }
+
+    constructor(uint256 initialData) {
+        owner = msg.sender;
+        data = initialData;
+    }
+
+    function updateData(uint256 newData) external onlyOwner validData(newData) {
+        data = newData;
+        emit DataUpdated(newData);
+    }
+
+    function getData() external view returns (uint256) {
+        return data;
+    }
+
+    function changeOwner(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "Invalid new owner address");
+        owner = newOwner;
+    }
+}
